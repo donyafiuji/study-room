@@ -8,6 +8,7 @@ from deep_translator import GoogleTranslator
 import spacy
 from gensim.parsing.preprocessing import STOPWORDS as GENSIM_STOPWORDS
 from PyDictionary import PyDictionary
+import string
 
 
 
@@ -546,6 +547,23 @@ class Model():
 
         return my_stopwords
 
+    
+    def RemovePuncs(self, dialogues):
+
+        # punctuation_marks = string.punctuation + '.'+ ','+ '?'+ '!'+ ':'+ ';'+ '"'+ "'"+ '-'+ '—'+ '('+ ')'+ '['+ ']'+ '{'+ '}'+ '...'+ '/'+'\\'+ '&'+ '@'+ '#'+ '$'+ '%'+ '^'+ '*'+ '+'+ '='+ '<'+ '>'+ '_'+ '|'+'..'+"'s"+"'re"+"'ll"+'INC'+"''"+'Hi' 
+        punctuation_marks = string.punctuation
+        translator = str.maketrans('', '', punctuation_marks)
+
+        new_dialogues = []
+        dialogues = dialogues
+
+        # Remove punctuation marks from each line in dialogues and append to new_dialogues
+        for line in dialogues:
+            line = line.translate(translator)
+            new_dialogues.append(line)
+
+        return new_dialogues
+
 
 
     def Translator(self, dialogues):
@@ -574,6 +592,7 @@ class Model():
         for word in filtered_words:
 
             synsets = wordnet.synsets(word)
+            print(len(synsets))
 
             if synsets:
                 first_synset = synsets[0]
@@ -582,14 +601,17 @@ class Model():
                     example_sentences.append(examples)
 
                 else:
-                    first_synset = synsets[1]
-                    examples = first_synset.examples()
-                    if examples:
-                        example_sentences.append(examples)
-                    else:
-                        first_synset = synsets[2]
+                    try:
+                        first_synset = synsets[1]
                         examples = first_synset.examples()
-                        example_sentences.append(examples)
+                        if examples:
+                            example_sentences.append(examples)
+                    except:
+                        pass 
+                        # else:
+                        #     first_synset = synsets[2]
+                        #     examples = first_synset.examples()
+                        #     example_sentences.append(examples)
 
             else:
                 example_sentences.append('')

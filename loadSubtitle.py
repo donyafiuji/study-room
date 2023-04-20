@@ -64,22 +64,3 @@ class loadSubtitle():
                     file.truncate()  
 
 
-
-        punctuation_marks = ['.', ',', '?', '!', ':', ';', '"', "'", '-', '—', '(', ')', '[', ']', '{', '}', '...', '/',
-                     '\\', '&', '@', '#', '$', '%', '^', '*', '+', '=', '<', '>', '_', '|','..',"'s","'re","'ll",'INC',"''"
-                     ,'Hi']
-
-
-        for season in range(1, 11):
-
-            season_dir = f'{parent_dir}/season {season}'
-            for filename in glob.glob(f'{season_dir}/*.srt'):
-                with open(filename, 'r+', encoding='ISO-8859-1') as file:
-
-                    # filters out the characters
-                    content = file.read()
-
-            # Remove special characters from subtitle text
-            for char in punctuation_marks:
-                content = content.replace(char, '')
-
