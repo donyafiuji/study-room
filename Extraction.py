@@ -546,6 +546,9 @@ class Model():
         my_stopwords.update(stopwords)
 
         return my_stopwords
+    
+
+
 
     
     def RemovePuncs(self, dialogues):
@@ -563,60 +566,54 @@ class Model():
             new_dialogues.append(line)
 
         return new_dialogues
+    
+    
 
 
 
-    def Translator(self, dialogues):
 
-
-        dictionary = PyDictionary()
+    def WordFilter(self, dialogues):
 
         stop_words = self.StopWords()
         words = dialogues.lower().split()
 
         filtered_words = [word for word in words if word not in stop_words]
 
-        translateds = []
-        meanings = []
-        example_sentences = []
-
-
-        for word in filtered_words:
-
-            translated = GoogleTranslator(source='auto', target='fa').translate(word)
-            translateds.append(translated)
-            meanings.append(dictionary.meaning(word))
-
-
-
-        for word in filtered_words:
-
-            synsets = wordnet.synsets(word)
-            print(len(synsets))
-
-            if synsets:
-                first_synset = synsets[0]
-                examples = first_synset.examples()
-                if examples:
-                    example_sentences.append(examples)
-
-                else:
-                    try:
-                        first_synset = synsets[1]
-                        examples = first_synset.examples()
-                        if examples:
-                            example_sentences.append(examples)
-                    except:
-                        pass 
-                        # else:
-                        #     first_synset = synsets[2]
-                        #     examples = first_synset.examples()
-                        #     example_sentences.append(examples)
-
-            else:
-                example_sentences.append('')
-
+        return filtered_words
     
-        return translateds, filtered_words, meanings, example_sentences
+
+
+
+
+
+    def Translator(self, word):
+
+
+        dictionary = PyDictionary()
+
+        translated = GoogleTranslator(source='auto', target='fa').translate(word)
+        meaning = dictionary.meaning(word)
+
+        return translated, meaning
+
 
         
+    
+    def Example(self, word):
+
+        synsets = wordnet.synsets(word)
+
+        if synsets:
+            first_synset = synsets[0]
+            examples = first_synset.examples()
+            if examples:
+                return examples
+
+            else:
+                try:
+                    first_synset = synsets[1]
+                    examples = first_synset.examples()
+                    if examples:
+                        return examples
+                except:
+                    pass 
