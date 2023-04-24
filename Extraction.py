@@ -55,7 +55,7 @@ class Model():
 
     def StopWords(self):
 
-        my_stopwords = set(['the','The', 'a', 'an', 'and', 'but', 'or', '1','0','2','3','4','5','6','7','8',
+        my_stopwords = set(['the','a', 'an', 'and', 'but', 'or', '1','0','2','3','4','5','6','7','8',
     '9','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', 
     '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', 
     '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', 
@@ -532,9 +532,127 @@ class Model():
     '’m',
     '’re',
     '’s',
-    '’ve']
-    )
-        
+    '’ve',
+    'rachel',
+    'ross',
+    'monica',
+    'chandler',
+    'phoebe',
+    'joey',
+    'janice',
+    'gunther',
+    'mr. heckles',
+    'carol',
+    'susan',
+    'ben',
+    'judy',
+    'jack',
+    'frank',
+    'alice',
+    'estelle',
+    'richard',
+    'emily',
+    'janine',
+    'ursula',
+    'mike',
+    'amy',
+    'paolo',
+    'tag',
+    'eddie',
+    'gary',
+    'stephanie',
+    'jill',
+    'cecilia',
+    'pete',
+    'elizabeth',
+    'mona',
+    'jade',
+    'zelner',
+    'mr. treeger',
+    'cassie',
+    'aunt iris',
+    'aunt lillian',
+    'aunt cookie',
+    'nora',
+    'helena',
+    'frank sr.',
+    'phoebe sr.',
+    'lily',
+    'leslie',
+    'howard',
+    'cookie',
+    'terry',
+    'leila',
+    'colleen',
+    'duncan',
+    'trudy',
+    'rory',
+    'parker',
+    'sandrine',
+    'the chick',
+    'emma',
+    'rachel green',
+    'ross geller',
+    'monica geller',
+    'chandler bing',
+    'phoebe buffay',
+    'joey tribbiani',
+    'janice litman goralnik',
+    'gunther',
+    'mr. heckles',
+    'carol willick',
+    'susan bunch',
+    'ben geller',
+    'judy geller',
+    'jack geller',
+    'frank buffay jr.',
+    'alice knight buffay',
+    'estelle leonard',
+    'richard burke',
+    'emily waltham',
+    'janine lacroix',
+    'ursula buffay',
+    'mike hannigan',
+    'amy green',
+    'paolo',
+    'tag jones',
+    'eddie menuek',
+    'gary',
+    'stephanie schiffer',
+    'jill green',
+    'cecilia monroe',
+    'dr. richard burke',
+    'pete becker',
+    'elizabeth stevens',
+    'mona',
+    'jade',
+    'zelner',
+    'mr. treeger',
+    'cassie geller',
+    'aunt iris',
+    'aunt lillian',
+    'aunt cookie',
+    'nora bing',
+    'helena handbasket',
+    'frank buffay sr.',
+    'phoebe abbott',
+    'phoebe buffay sr.',
+    'lily buffay',
+    'leslie buffay',
+    'howard buffay',
+    'cookie buffay',
+    'terry buffay',
+    'leila buffay',
+    'colleen buffay',
+    'duncan',
+    'trudy',
+    'rory',
+    'parker',
+    'sandrine',
+    'the chick',
+    'emma geller-green'
+    ])
+       
         # stop_words = set(stopwords.words('english'))
 
         # stop_words.update(my_stopwords)
@@ -548,13 +666,11 @@ class Model():
         return my_stopwords
     
 
-
-
     
     def RemovePuncs(self, dialogues):
 
-        # punctuation_marks = string.punctuation + '.'+ ','+ '?'+ '!'+ ':'+ ';'+ '"'+ "'"+ '-'+ '—'+ '('+ ')'+ '['+ ']'+ '{'+ '}'+ '...'+ '/'+'\\'+ '&'+ '@'+ '#'+ '$'+ '%'+ '^'+ '*'+ '+'+ '='+ '<'+ '>'+ '_'+ '|'+'..'+"'s"+"'re"+"'ll"+'INC'+"''"+'Hi' 
-        punctuation_marks = string.punctuation
+        punctuation_marks = string.punctuation + '.'+ ','+ '?'+ '!'+ ':'+ ';'+ '"'+ "'"+ '-'+ '—'+ '('+ ')'+ '['+ ']'+ '{'+ '}'+ '...'+ '/'+'\\'+ '&'+ '@'+ '#'+ '$'+ '%'+ '^'+ '*'+ '+'+ '='+ '<'+ '>'+ '_'+ '|'+'..'+"'s"+"'re"+"'ll"+'INC'+"''"+'Hi' 
+        # punctuation_marks = string.punctuation
         translator = str.maketrans('', '', punctuation_marks)
 
         new_dialogues = []
@@ -570,8 +686,6 @@ class Model():
     
 
 
-
-
     def WordFilter(self, dialogues):
 
         stop_words = self.StopWords()
@@ -581,8 +695,6 @@ class Model():
 
         return filtered_words
     
-
-
 
 
 
