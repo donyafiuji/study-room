@@ -736,14 +736,14 @@ class Model():
         if synsets:
             first_synset = synsets[0]
             examples = first_synset.examples()
-            if examples:
+            if examples and word in examples:
                 return examples
 
             else:
                 try:
                     first_synset = synsets[1]
                     examples = first_synset.examples()
-                    if examples:
+                    if examples and word in examples:
                         return examples
                 except:
                     pass 
