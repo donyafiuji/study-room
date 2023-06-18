@@ -1,5 +1,7 @@
 import re
 import nltk
+nltk.download('punkt')
+from nltk.tokenize import sent_tokenize
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 nltk.download('wordnet')
@@ -41,6 +43,8 @@ class Model():
         return matches, dialogues,start_times, end_times
 
 
+
+
     def tag(self, path, season_dir):
         
         matches = self.DialogueExtraction(path)[0]
@@ -56,9 +60,12 @@ class Model():
         return tag, time
 
 
+
+
+
     def StopWords(self):
 
-        my_stopwords = set(['the','id','guys',
+        my_stopwords = set(['the','id','guys','guy','salad',
                             'a', 'an', 'and', 'but', 'or', '1','0','2','3','4','5','6','7','8','liza','brothers','sisters','im','theres','ill','thats','goes','isnt','thats','took','youre','ive','hed','wasnt','la','wee',
     '9','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', 
     '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', 
@@ -684,6 +691,7 @@ class Model():
         return my_stopwords
     
 
+
     
     def RemovePuncs(self, dialogues):
 
@@ -704,6 +712,8 @@ class Model():
     
 
 
+
+
     def WordFilter(self, dialogues):
 
         stop_words = self.StopWords()
@@ -716,34 +726,67 @@ class Model():
 
 
 
+
     def Translator(self, word):
 
 
         dictionary = PyDictionary()
 
-        translated = GoogleTranslator(source='auto', target='fa').translate(word)
+        # translated = GoogleTranslator(source='auto', target='fa').translate(word)
         meaning = dictionary.meaning(word)
 
-        return translated, meaning
+
+        synonyms = []
+        translations =[]
+
+        # Get synsets (sets of synonyms) for the word
+        synsets = wordnet.synsets(word)
+
+        # Extract synonyms from each synset
+        for synset in synsets:
+            for lemma in synset.lemmas():
+                synonyms.append(lemma.name())
+
+        synonyms=set(synonyms)
+
+        for syn in synonyms:
+            
+            translations.append(f" {GoogleTranslator(source='auto', target='fa').translate(syn)} ")
+
+        return meaning,synonyms,translations
 
 
         
     
     def Example(self, word):
 
+        example_sentences = []
         synsets = wordnet.synsets(word)
 
         if synsets:
-            first_synset = synsets[0]
-            examples = first_synset.examples()
-            if examples and word in examples:
-                return examples
+            # first_synset = synsets[0]
+            # examples = first_synset.examples()
+            # if examples:
+            #     if word in examples:
+            #         return examples
 
-            else:
-                try:
-                    first_synset = synsets[1]
-                    examples = first_synset.examples()
-                    if examples and word in examples:
-                        return examples
-                except:
-                    pass 
+            # else:
+            #     try:
+            #         first_synset = synsets[1]
+            #         examples = first_synset.examples()
+            #         if examples:
+            #             if word in examples:
+            #                 return examples
+            #     except:
+            #         pass         
+            for synset in synsets:
+                for lemma in synset.lemmas():
+                    for example in lemma.synset().examples():
+                        sentences = sent_tokenize(example)
+                        for sentence in sentences:
+                            if word in sentence.lower():
+                                example_sentences.append(sentence)
+
+            example_sentences = list(set(example_sentences))
+
+        return example_sentences
