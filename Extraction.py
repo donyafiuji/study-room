@@ -11,6 +11,7 @@ import spacy
 from gensim.parsing.preprocessing import STOPWORDS as GENSIM_STOPWORDS
 from PyDictionary import PyDictionary
 import string
+import requests
 
 
 
@@ -730,6 +731,10 @@ class Model():
     def Translator(self, word):
 
 
+
+        """ this uses a local dataset or WordNet database to retrieve the meanings.
+
+         """
         dictionary = PyDictionary()
 
         # translated = GoogleTranslator(source='auto', target='fa').translate(word)
@@ -749,14 +754,65 @@ class Model():
 
         synonyms=set(synonyms)
 
-        for syn in synonyms:
+        # for syn in synonyms:
             
-            translations.append(f" {GoogleTranslator(source='auto', target='fa').translate(syn)} ")
-
-        return meaning,synonyms,translations
+        #     translations.append(f" {GoogleTranslator(source='auto', target='fa').translate(syn)} ")
 
 
+
+
+        return meaning,synonyms
+
+
+
+
+
+    def persian_mean(self, word):
         
+
+
+        api_url = "https://www.faraazin.ir/api/dictionary"
+        params = {"text": word}
+
+        response = requests.get(api_url, params=params)
+        data = response.json()
+
+        # Assuming you have the JSON response stored in the variable 'response'
+
+        type_to_meanings = data['typeToMeanings']
+
+        # Create a list to store the categorized meanings
+        categorized_meanings = []
+
+        # Iterate over each type and extract the meanings
+        for word_type, meanings_info in type_to_meanings.items():
+            meanings = meanings_info['meanings']
+            categorized_meanings.append(f'{word_type}: {meanings}')
+
+        # Join the categorized meanings into a single string
+        output = '\n'.join(categorized_meanings)
+
+        return output
+    
+
+
+
+
+
+    def JSON(self, word):
+
+
+        api_url = "https://www.faraazin.ir/api/dictionary"
+        params = {"text": word}
+
+        response = requests.get(api_url, params=params)
+        data = response.json()
+
+        return data
+    
+
+
+
     
     def Example(self, word):
 
