@@ -5,6 +5,9 @@ from nltk.tokenize import sent_tokenize
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
+from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet
 from deep_translator import GoogleTranslator
 import spacy
@@ -12,6 +15,9 @@ from gensim.parsing.preprocessing import STOPWORDS as GENSIM_STOPWORDS
 from PyDictionary import PyDictionary
 import string
 import requests
+
+
+
 
 
 
@@ -693,6 +699,35 @@ class Model():
     
 
 
+
+
+
+    # def filter_compound_words(self, dialogue):
+
+
+    #     prepositions = ["out", "off", "in", "on", "over", "down", "under", "back", "forth", "away", 
+    #                     "around", "through", "across", "within", "inside", "outside", "forward", "upon", 
+    #                     "with", "through", "to", "toward", "past", "onto", "near", "of", "for", "from", "by", 
+    #                     "after", "about", "above", "up"]
+
+    #     # filtered_words = []
+    #     # for diag in dialogue:
+    #     words = word_tokenize(dialogue.lower())
+    #     for i, word in enumerate(words):
+    #         if word in prepositions and i + 1 < len(words):
+    #             prev_word = words[i - 1]
+    #             # Check the POS (Part-of-Speech) tag of the next word
+    #             pos = pos_tag([prev_word])[0][1]
+    #             # Include compound words with nouns, adjectives, or verbs
+    #             if pos.startswith('VB'):
+    #                 compound_word = f"{prev_word} {word}"
+    #                 # input(compound_word)
+
+    #                 return compound_word
+    
+
+
+
     
     def RemovePuncs(self, dialogues):
 
@@ -722,6 +757,25 @@ class Model():
 
         filtered_words = [word for word in words if word not in stop_words]
 
+        prepositions = ["out", "off", "in", "on", "over", "down", "under", "back", "forth", "away", 
+                "around", "through", "across", "within", "inside", "outside", "forward", "upon", 
+                "with", "through", "to", "toward", "past", "onto", "near", "of", "for", "from", "by", 
+                "after", "about", "above", "up"]
+
+        # filtered_words = []
+        # for diag in dialogue:
+        words = word_tokenize(dialogues.lower())
+        for i, word in enumerate(words):
+            if word in prepositions and i + 1 < len(words):
+                prev_word = words[i - 1]
+                # Check the POS (Part-of-Speech) tag of the next word
+                pos = pos_tag([prev_word])[0][1]
+                # Include compound words with nouns, adjectives, or verbs
+                if pos.startswith('VB'):
+                    compound_word = f"{prev_word} {word}"
+                    # input(compound_word)
+                    filtered_words.append(compound_word)
+
         return filtered_words
     
 
@@ -732,12 +786,10 @@ class Model():
 
 
 
-        """ this uses a local dataset or WordNet database to retrieve the meanings.
-
-         """
+        """ this uses a local dataset or WordNet database to retrieve the meanings. """
         dictionary = PyDictionary()
 
-        # translated = GoogleTranslator(source='auto', target='fa').translate(word)
+        # meaning = GoogleTranslator(source='auto', target='fa').translate(word)
         meaning = dictionary.meaning(word)
 
 
@@ -767,6 +819,7 @@ class Model():
 
 
 
+
     def persian_mean(self, word):
         
 
@@ -777,23 +830,70 @@ class Model():
         response = requests.get(api_url, params=params)
         data = response.json()
 
-        # Assuming you have the JSON response stored in the variable 'response'
+        if data['notFound'] == False: 
 
-        type_to_meanings = data['typeToMeanings']
+            # Assuming you have the JSON response stored in the variable 'response'
 
-        # Create a list to store the categorized meanings
-        categorized_meanings = []
+            type_to_meanings = data['typeToMeanings']
 
-        # Iterate over each type and extract the meanings
-        for word_type, meanings_info in type_to_meanings.items():
-            meanings = meanings_info['meanings']
-            categorized_meanings.append(f'{word_type}: {meanings}')
+            # Create a list to store the categorized meanings
+            categorized_meanings = []
 
-        # Join the categorized meanings into a single string
-        output = '\n'.join(categorized_meanings)
+            # Iterate over each type and extract the meanings
+            for word_type, meanings_info in type_to_meanings.items():
+                meanings = meanings_info['meanings']
+                categorized_meanings.append(f'{word_type}: {meanings}')
 
-        return output
+            # Join the categorized meanings into a single string
+            output = '\n'.join(categorized_meanings)
+
+            return output, type_to_meanings
+        
+        elif data['notFound'] == True: 
+
+            output = GoogleTranslator(source='auto', target='fa').translate(word)
+            print('the alternative applied')
+                
+            return output, None
+        
     
+
+
+
+
+    def persian_mean2(self, word):
+
+
+
+        """ this uses a local dataset or WordNet database to retrieve the meanings. """
+        dictionary = PyDictionary()
+
+        meaning = GoogleTranslator(source='auto', target='fa').translate(word)
+        # meaning = dictionary.meaning(word)
+
+
+        # synonyms = []
+        # translations =[]
+
+        # # Get synsets (sets of synonyms) for the word
+        # synsets = wordnet.synsets(word)
+
+        # # Extract synonyms from each synset
+        # for synset in synsets:
+        #     for lemma in synset.lemmas():
+        #         synonyms.append(lemma.name())
+
+        # synonyms=set(synonyms)
+
+        # for syn in synonyms:
+            
+        #     translations.append(f" {GoogleTranslator(source='auto', target='fa').translate(syn)} ")
+
+
+
+
+        return meaning
+
 
 
 
